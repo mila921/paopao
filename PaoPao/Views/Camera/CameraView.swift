@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CameraView: View {
     @State var viewModel = CameraViewModel()
+    var onPetSetup: (() -> Void)? = nil
     @State private var showFlash = false
     @State private var catMood: String = "😺"
     @State private var tipText: String = "记录今天的小确幸"
@@ -21,7 +22,7 @@ struct CameraView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(red: 0.96, green: 0.96, blue: 0.97).ignoresSafeArea()
 
             VStack(spacing: 0) {
                 // 顶部状态栏
@@ -40,7 +41,7 @@ struct CameraView: View {
                 // 底部提示文字
                 Text(isRecording ? "松开结束录制" : tipText)
                     .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.black.opacity(0.5))
                     .animation(.easeInOut, value: isRecording)
 
                 Spacer().frame(height: 24)
@@ -74,26 +75,21 @@ struct CameraView: View {
 
     private var topBar: some View {
         HStack {
-            // 小猫表情 - 随机变化
+            // 小猫表情 - 点击进入宠物设置
             Text(catMood)
                 .font(.system(size: 28))
                 .onTapGesture {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
                         catMood = ["😺", "😸", "😻", "🙀", "😽"].randomElement()!
                     }
+                    onPetSetup?()
                 }
 
             Spacer()
 
             Text("泡泡")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [.pink, .purple],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
+                .font(.system(size: 22, weight: .heavy, design: .serif))
+                .foregroundStyle(Color(red: 1.0, green: 0.9, blue: 0.43))
 
             Spacer()
 
@@ -101,7 +97,7 @@ struct CameraView: View {
             Button(action: {}) {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
                     .font(.system(size: 20))
-                    .foregroundStyle(.white.opacity(0.8))
+                    .foregroundStyle(.black.opacity(0.6))
             }
         }
     }
@@ -140,16 +136,15 @@ struct CameraView: View {
                 // 圆角边框装饰
                 RoundedRectangle(cornerRadius: 40)
                     .stroke(
-                        LinearGradient(
-                            colors: isRecording ?
-                                [.pink, .orange, .pink] :
-                                [.white.opacity(0.2), .white.opacity(0.05)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: isRecording ? 3 : 1.5
+                        isRecording ?
+                            Color(red: 1.0, green: 0.42, blue: 0.42) :
+                            Color.black.opacity(0.15),
+                        style: StrokeStyle(
+                            lineWidth: isRecording ? 3 : 1.5,
+                            dash: isRecording ? [] : [12, 8]
+                        )
                     )
-                    .animation(.easeInOut(duration: 0.3), value: isRecording)
+                    .animation(.spring(response: 0.4, dampingFraction: 0.65), value: isRecording)
 
                 // 四角装饰点
                 cornerDots(size: size)
@@ -162,12 +157,16 @@ struct CameraView: View {
 
     private func cornerDots(size: CGSize) -> some View {
         let offset: CGFloat = 20
-        let dotSize: CGFloat = 8
         return ZStack {
             ForEach(0..<4, id: \.self) { i in
-                Circle()
-                    .fill(.white.opacity(0.6))
-                    .frame(width: dotSize, height: dotSize)
+                Image(systemName: ["star.fill", "heart.fill", "sparkle", "moon.fill"][i])
+                    .font(.system(size: 10))
+                    .foregroundStyle(
+                        [Color(red: 1.0, green: 0.9, blue: 0.43),
+                         Color(red: 0.31, green: 0.8, blue: 0.77),
+                         Color(red: 1.0, green: 0.42, blue: 0.42),
+                         Color(red: 0.27, green: 0.72, blue: 0.82)][i]
+                    )
                     .offset(
                         x: (i % 2 == 0 ? -1 : 1) * (size.width / 2 - offset),
                         y: (i < 2 ? -1 : 1) * (size.height / 2 - offset)

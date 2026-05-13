@@ -14,18 +14,14 @@ struct ShutterButton: View {
         ZStack {
             // 外圈进度环
             Circle()
-                .stroke(Color.white.opacity(0.3), lineWidth: 6)
+                .stroke(Color.black.opacity(0.15), lineWidth: 6)
                 .frame(width: 80, height: 80)
 
             if isRecording {
                 Circle()
                     .trim(from: 0, to: recordingProgress)
                     .stroke(
-                        LinearGradient(
-                            colors: [.pink, .orange],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
+                        Color(red: 1.0, green: 0.42, blue: 0.42),
                         style: StrokeStyle(lineWidth: 6, lineCap: .round)
                     )
                     .frame(width: 80, height: 80)
@@ -36,13 +32,13 @@ struct ShutterButton: View {
             // 内圈按钮
             Circle()
                 .fill(isRecording ?
-                    AnyShapeStyle(LinearGradient(colors: [.pink, .red], startPoint: .top, endPoint: .bottom)) :
-                    AnyShapeStyle(Color.white)
+                    AnyShapeStyle(Color(red: 1.0, green: 0.42, blue: 0.42)) :
+                    AnyShapeStyle(Color(red: 0.31, green: 0.8, blue: 0.77))
                 )
                 .frame(width: isRecording ? 40 : 64, height: isRecording ? 40 : 64)
                 .scaleEffect(scale)
-                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isRecording)
-                .animation(.spring(response: 0.2), value: scale)
+                .animation(.spring(response: 0.25, dampingFraction: 0.55), value: isRecording)
+                .animation(.spring(response: 0.15, dampingFraction: 0.5), value: scale)
         }
         .onTapGesture {
             if !isRecording {

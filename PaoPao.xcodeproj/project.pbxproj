@@ -17,6 +17,12 @@
 		A1000008 /* EmotionAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000008 /* EmotionAnimationView.swift */; };
 		A1000009 /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000009 /* CelebrationView.swift */; };
 		A100000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200000A /* Assets.xcassets */; };
+		A100000B /* PetProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000C /* PetProfile.swift */; };
+		A100000C /* PetSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000D /* PetSetupView.swift */; };
+		A100000D /* SpeciesSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000E /* SpeciesSelectionView.swift */; };
+		A100000E /* TraitSlidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000F /* TraitSlidersView.swift */; };
+		A100000F /* NamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010 /* NamingView.swift */; };
+		A1000010 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000011 /* PreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +37,12 @@
 		A2000009 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		A200000A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A200000B /* PaoPao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaoPao.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A200000C /* PetProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetProfile.swift; sourceTree = "<group>"; };
+		A200000D /* PetSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSetupView.swift; sourceTree = "<group>"; };
+		A200000E /* SpeciesSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesSelectionView.swift; sourceTree = "<group>"; };
+		A200000F /* TraitSlidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitSlidersView.swift; sourceTree = "<group>"; };
+		A2000010 /* NamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamingView.swift; sourceTree = "<group>"; };
+		A2000011 /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				A2000003 /* JournalEntry.swift */,
+				A200000C /* PetProfile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -86,6 +99,7 @@
 			children = (
 				A4000006 /* Camera */,
 				A4000007 /* PostCapture */,
+				A4000008 /* PetSetup */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -107,6 +121,18 @@
 				A2000009 /* CelebrationView.swift */,
 			);
 			path = PostCapture;
+			sourceTree = "<group>";
+		};
+		A4000008 /* PetSetup */ = {
+			isa = PBXGroup;
+			children = (
+				A200000D /* PetSetupView.swift */,
+				A200000E /* SpeciesSelectionView.swift */,
+				A200000F /* TraitSlidersView.swift */,
+				A2000010 /* NamingView.swift */,
+				A2000011 /* PreviewView.swift */,
+			);
+			path = PetSetup;
 			sourceTree = "<group>";
 		};
 		A4000010 /* Products */ = {
@@ -195,6 +221,12 @@
 				A1000007 /* CameraView.swift in Sources */,
 				A1000008 /* EmotionAnimationView.swift in Sources */,
 				A1000009 /* CelebrationView.swift in Sources */,
+				A100000B /* PetProfile.swift in Sources */,
+				A100000C /* PetSetupView.swift in Sources */,
+				A100000D /* SpeciesSelectionView.swift in Sources */,
+				A100000E /* TraitSlidersView.swift in Sources */,
+				A100000F /* NamingView.swift in Sources */,
+				A1000010 /* PreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

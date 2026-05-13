@@ -4,6 +4,7 @@ import SwiftData
 enum AppScreen: Equatable {
     case camera
     case celebration(fileName: String, mediaType: MediaType)
+    case petSetup
 }
 
 struct ContentView: View {
@@ -22,9 +23,13 @@ struct ContentView: View {
                     publishEntry(fileName: fileName, mediaType: mediaType)
                 }
                 .transition(.opacity)
+
+            case .petSetup:
+                PetSetupView { screen = .camera }
+                    .transition(.move(edge: .bottom))
             }
         }
-        .animation(.easeInOut(duration: 0.3), value: screen)
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: screen)
         .onChange(of: cameraViewModel.captureState) { _, newState in
             if case .captured(let fileName, let mediaType) = newState {
                 screen = .celebration(fileName: fileName, mediaType: mediaType)
@@ -33,7 +38,7 @@ struct ContentView: View {
     }
 
     private var cameraScreen: some View {
-        CameraView(viewModel: cameraViewModel)
+        CameraView(viewModel: cameraViewModel, onPetSetup: { screen = .petSetup })
     }
 
     private func publishEntry(fileName: String, mediaType: MediaType) {

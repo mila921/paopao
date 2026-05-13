@@ -7,10 +7,12 @@ struct CelebrationView: View {
 
     @State private var showDoneButton = false
     @State private var emotionType: EmotionType = .confetti
+    @State private var titleScale: CGFloat = 0.3
+    @State private var subtitleOffset: CGFloat = 20
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(red: 0.96, green: 0.96, blue: 0.97).ignoresSafeArea()
 
             // 背景：拍摄的照片
             if mediaType == .photo, let image = loadImage() {
@@ -19,8 +21,8 @@ struct CelebrationView: View {
                     .scaledToFill()
                     .clipShape(RoundedRectangle(cornerRadius: 40))
                     .padding(16)
-                    .blur(radius: 2)
-                    .opacity(0.6)
+                    .blur(radius: 1)
+                    .opacity(0.5)
             }
 
             // 情绪动画
@@ -31,20 +33,18 @@ struct CelebrationView: View {
             VStack(spacing: 20) {
                 Text("🎉")
                     .font(.system(size: 80))
+                    .scaleEffect(titleScale)
 
                 Text("太棒了！")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.white, .pink],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
+                    .font(.system(size: 36, weight: .heavy, design: .serif))
+                    .foregroundStyle(Color(red: 1.0, green: 0.42, blue: 0.42))
+                    .scaleEffect(titleScale)
 
                 Text("又记录了一个美好瞬间")
                     .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.black.opacity(0.5))
+                    .offset(y: subtitleOffset)
+                    .opacity(subtitleOffset == 0 ? 1 : 0)
             }
 
             // 完成按钮
@@ -54,27 +54,27 @@ struct CelebrationView: View {
                     Button(action: onDone) {
                         Text("发布 ✨")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .background(
-                                LinearGradient(
-                                    colors: [.pink, .purple],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
+                            .background(Color(red: 0.31, green: 0.8, blue: 0.77))
                             .clipShape(Capsule())
                             .padding(.horizontal, 40)
                     }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .transition(.scale.combined(with: .opacity))
                 }
                 Spacer().frame(height: 60)
             }
         }
         .onAppear {
             emotionType = EmotionType.allCases.randomElement() ?? .confetti
-            withAnimation(.easeOut(duration: 0.5).delay(2.0)) {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                titleScale = 1.0
+            }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.3)) {
+                subtitleOffset = 0
+            }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6).delay(1.5)) {
                 showDoneButton = true
             }
         }
