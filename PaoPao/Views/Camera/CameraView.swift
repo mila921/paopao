@@ -136,6 +136,7 @@ struct CameraView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: geo.size.width * 0.65)
+                    .clipShape(Rectangle().offset(y: 0).size(width: geo.size.width, height: geo.size.width * 0.65 * (2080.0/1734.0) * 0.5 - 10))
                     .position(x: geo.size.width / 2, y: geo.size.width * 0.5 * (2080.0/1734.0) * 0.5 - 70)
                     .allowsHitTesting(false)
             }
