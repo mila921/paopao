@@ -5,7 +5,6 @@ struct CameraView: View {
     var petAvatarFileName: String = ""
     var onPetSetup: (() -> Void)? = nil
     @State private var showFlash = false
-    @State private var catMood: String = "😺"
     @State private var tipText: String = "记录今天的小确幸"
 
     private let tips = [
@@ -23,31 +22,31 @@ struct CameraView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.96, green: 0.96, blue: 0.97).ignoresSafeArea()
+            Color(red: 0.98, green: 0.96, blue: 0.93).ignoresSafeArea()
+
+            doodleDecorations
 
             VStack(spacing: 0) {
-                // 顶部状态栏
                 topBar
                     .padding(.horizontal, 20)
                     .padding(.top, 8)
 
-                Spacer().frame(height: 20)
+                Spacer().frame(height: 16)
 
-                // 大圆角取景框
                 viewfinder
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 20)
 
                 Spacer()
 
-                // 底部提示文字
                 Text(isRecording ? "松开结束录制" : tipText)
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundStyle(.black.opacity(0.5))
-                    .animation(.easeInOut, value: isRecording)
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundStyle(.black.opacity(0.4))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Capsule().fill(.white.opacity(0.7)))
 
-                Spacer().frame(height: 24)
+                Spacer().frame(height: 20)
 
-                // 快门按钮
                 ShutterButton(
                     isRecording: isRecording,
                     recordingProgress: viewModel.recordingProgress,
@@ -56,14 +55,11 @@ struct CameraView: View {
                     onLongPressEnd: { viewModel.stopRecording() }
                 )
 
-                Spacer().frame(height: 40)
+                Spacer().frame(height: 36)
             }
 
-            // 拍照闪光效果
             if showFlash {
-                Color.white
-                    .ignoresSafeArea()
-                    .transition(.opacity)
+                Color.white.ignoresSafeArea().transition(.opacity)
             }
         }
         .onAppear {
@@ -76,7 +72,6 @@ struct CameraView: View {
 
     private var topBar: some View {
         HStack {
-            // 宠物头像 - 点击进入宠物设置
             Button(action: { onPetSetup?() }) {
                 if !petAvatarFileName.isEmpty,
                    let img = loadPetAvatar(petAvatarFileName) {
@@ -86,25 +81,26 @@ struct CameraView: View {
                         .frame(width: 36, height: 36)
                         .clipShape(Circle())
                         .overlay(Circle().stroke(.white, lineWidth: 2))
+                        .shadow(color: .black.opacity(0.08), radius: 3, y: 1)
                 } else {
-                    Text(catMood)
-                        .font(.system(size: 28))
+                    Text("😺").font(.system(size: 28))
                 }
             }
 
             Spacer()
 
             Text("喵了个日记")
-                .font(.system(size: 18, weight: .heavy, design: .serif))
-                .foregroundStyle(Color(red: 0.31, green: 0.8, blue: 0.77))
+                .font(.system(size: 17, weight: .heavy, design: .serif))
+                .foregroundStyle(Color(red: 0.35, green: 0.55, blue: 0.55))
 
             Spacer()
 
-            // 翻转相机按钮
             Button(action: {}) {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.black.opacity(0.6))
+                    .font(.system(size: 18))
+                    .foregroundStyle(.black.opacity(0.4))
+                    .padding(8)
+                    .background(Circle().fill(.white.opacity(0.7)))
             }
         }
     }
@@ -113,72 +109,66 @@ struct CameraView: View {
 
     private var viewfinder: some View {
         GeometryReader { geo in
-            let size = geo.size
             ZStack {
                 #if targetEnvironment(simulator)
-                // 模拟器占位
-                RoundedRectangle(cornerRadius: 40)
-                    .fill(
-                        LinearGradient(
-                            colors: [.purple.opacity(0.3), .pink.opacity(0.2)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                RoundedRectangle(cornerRadius: 32)
+                    .fill(Color(red: 0.92, green: 0.9, blue: 0.86))
                     .overlay {
                         VStack(spacing: 12) {
                             Image(systemName: "camera.fill")
-                                .font(.system(size: 40))
-                                .foregroundStyle(.white.opacity(0.5))
+                                .font(.system(size: 36))
+                                .foregroundStyle(.black.opacity(0.2))
                             Text("真机预览")
-                                .font(.system(size: 14, design: .rounded))
-                                .foregroundStyle(.white.opacity(0.5))
+                                .font(.system(size: 13, design: .rounded))
+                                .foregroundStyle(.black.opacity(0.3))
                         }
                     }
                 #else
                 CameraPreviewLayer(session: viewModel.session)
-                    .clipShape(RoundedRectangle(cornerRadius: 40))
+                    .clipShape(RoundedRectangle(cornerRadius: 32))
                 #endif
 
-                // 圆角边框装饰
-                RoundedRectangle(cornerRadius: 40)
+                RoundedRectangle(cornerRadius: 32)
                     .stroke(
-                        isRecording ?
-                            Color(red: 1.0, green: 0.42, blue: 0.42) :
-                            Color.black.opacity(0.15),
-                        style: StrokeStyle(
-                            lineWidth: isRecording ? 3 : 1.5,
-                            dash: isRecording ? [] : [12, 8]
-                        )
+                        isRecording ? Color(red: 1.0, green: 0.42, blue: 0.42) : .black.opacity(0.08),
+                        style: StrokeStyle(lineWidth: isRecording ? 3 : 2, dash: isRecording ? [] : [10, 6])
                     )
-                    .animation(.spring(response: 0.4, dampingFraction: 0.65), value: isRecording)
+                    .animation(.spring(response: 0.3), value: isRecording)
 
-                // 四角装饰点
-                cornerDots(size: size)
+                cornerStickers(size: geo.size)
             }
         }
         .aspectRatio(3.0/4.0, contentMode: .fit)
     }
 
-    // MARK: - 四角装饰
+    // MARK: - 四角贴纸
 
-    private func cornerDots(size: CGSize) -> some View {
-        let offset: CGFloat = 20
+    private func cornerStickers(size: CGSize) -> some View {
+        let inset: CGFloat = 16
         return ZStack {
-            ForEach(0..<4, id: \.self) { i in
-                Image(systemName: ["star.fill", "heart.fill", "sparkle", "moon.fill"][i])
-                    .font(.system(size: 10))
-                    .foregroundStyle(
-                        [Color(red: 1.0, green: 0.9, blue: 0.43),
-                         Color(red: 0.31, green: 0.8, blue: 0.77),
-                         Color(red: 1.0, green: 0.42, blue: 0.42),
-                         Color(red: 0.27, green: 0.72, blue: 0.82)][i]
-                    )
-                    .offset(
-                        x: (i % 2 == 0 ? -1 : 1) * (size.width / 2 - offset),
-                        y: (i < 2 ? -1 : 1) * (size.height / 2 - offset)
-                    )
-            }
+            Text("⭐️").font(.system(size: 14))
+                .offset(x: -(size.width/2 - inset), y: -(size.height/2 - inset))
+            Text("🌸").font(.system(size: 14))
+                .offset(x: size.width/2 - inset, y: -(size.height/2 - inset))
+            Text("🍀").font(.system(size: 14))
+                .offset(x: -(size.width/2 - inset), y: size.height/2 - inset)
+            Text("✨").font(.system(size: 14))
+                .offset(x: size.width/2 - inset, y: size.height/2 - inset)
+        }
+    }
+
+    // MARK: - 散落装饰
+
+    private var doodleDecorations: some View {
+        ZStack {
+            Text("~").font(.system(size: 20)).foregroundStyle(.black.opacity(0.06))
+                .offset(x: -140, y: -300).rotationEffect(.degrees(-15))
+            Text("♪").font(.system(size: 16)).foregroundStyle(.black.opacity(0.06))
+                .offset(x: 150, y: -280)
+            Text("○").font(.system(size: 24)).foregroundStyle(.black.opacity(0.05))
+                .offset(x: -120, y: 320)
+            Text("△").font(.system(size: 18)).foregroundStyle(.black.opacity(0.05))
+                .offset(x: 140, y: 300)
         }
     }
 
