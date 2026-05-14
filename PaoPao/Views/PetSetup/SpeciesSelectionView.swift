@@ -1,8 +1,11 @@
 import SwiftUI
+import PhotosUI
 
 struct SpeciesSelectionView: View {
     @Binding var selected: String?
     @Binding var customSpecies: String
+    @Binding var avatarItem: PhotosPickerItem?
+    @Binding var avatarImage: UIImage?
 
     private let options: [(species: String, emoji: String, name: String, desc: String)] = [
         ("cat", "🐱", "猫咪", "慵懒 · 腹黑 · 突然贴贴"),
@@ -18,6 +21,39 @@ struct SpeciesSelectionView: View {
                     .font(.system(size: 26, weight: .heavy, design: .serif))
                     .foregroundStyle(.black.opacity(0.8))
                     .padding(.top, 20)
+
+                // 头像选择
+                PhotosPicker(selection: $avatarItem, matching: .images) {
+                    if let avatarImage {
+                        Image(uiImage: avatarImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(.white, lineWidth: 3))
+                            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                    } else {
+                        VStack(spacing: 6) {
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.black.opacity(0.3))
+                            Text("上传头像")
+                                .font(.system(size: 12, design: .rounded))
+                                .foregroundStyle(.black.opacity(0.4))
+                        }
+                        .frame(width: 80, height: 80)
+                        .background(Circle().fill(.white))
+                        .overlay(Circle().stroke(style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])).foregroundStyle(.black.opacity(0.15)))
+                    }
+                }
+                .onChange(of: avatarItem) { _, newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let img = UIImage(data: data) {
+                            avatarImage = img
+                        }
+                    }
+                }
 
                 Text("它会用独特的方式陪你记录生活")
                     .font(.system(size: 15, design: .rounded))

@@ -5,10 +5,12 @@ enum AppScreen: Equatable {
     case camera
     case celebration(fileName: String, mediaType: MediaType)
     case petSetup
+    case petProfile
 }
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query private var pets: [PetProfile]
     @State private var screen: AppScreen = .camera
     @State private var cameraViewModel = CameraViewModel()
 
@@ -27,6 +29,12 @@ struct ContentView: View {
             case .petSetup:
                 PetSetupView { screen = .camera }
                     .transition(.move(edge: .bottom))
+
+            case .petProfile:
+                if let pet = pets.first {
+                    PetProfileView(pet: pet, onClose: { screen = .camera })
+                        .transition(.move(edge: .bottom))
+                }
             }
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: screen)
@@ -38,7 +46,13 @@ struct ContentView: View {
     }
 
     private var cameraScreen: some View {
-        CameraView(viewModel: cameraViewModel, onPetSetup: { screen = .petSetup })
+        CameraView(viewModel: cameraViewModel, petAvatarFileName: pets.first?.avatarFileName ?? "", onPetSetup: {
+            if pets.isEmpty {
+                screen = .petSetup
+            } else {
+                screen = .petProfile
+            }
+        })
     }
 
     private func publishEntry(fileName: String, mediaType: MediaType) {
@@ -46,7 +60,6 @@ struct ContentView: View {
         modelContext.insert(entry)
         try? modelContext.save()
 
-        // 重置回相机
         cameraViewModel.captureState = .idle
         screen = .camera
     }

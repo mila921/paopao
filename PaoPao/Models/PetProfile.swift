@@ -7,6 +7,7 @@ final class PetProfile {
     var name: String
     var species: String
     var emoji: String
+    var avatarFileName: String
     var traitTalk: Int
     var traitTone: Int
     var traitMode: Int
@@ -16,10 +17,11 @@ final class PetProfile {
     var createdAt: Date
     var updatedAt: Date
 
-    init(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String]) {
+    init(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String], avatarFileName: String = "") {
         self.id = UUID()
         self.name = name
         self.species = species
+        self.avatarFileName = avatarFileName
         let emojiMap = ["cat": "🐱", "dog": "🐶", "rabbit": "🐰", "fox": "🦊"]
         self.emoji = emojiMap[species] ?? "🐾"
         self.traitTalk = traits.talk

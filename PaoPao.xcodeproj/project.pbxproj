@@ -23,6 +23,7 @@
 		A100000E /* TraitSlidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000F /* TraitSlidersView.swift */; };
 		A100000F /* NamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010 /* NamingView.swift */; };
 		A1000010 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000011 /* PreviewView.swift */; };
+		A1000011 /* PetProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000012 /* PetProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		A200000F /* TraitSlidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitSlidersView.swift; sourceTree = "<group>"; };
 		A2000010 /* NamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamingView.swift; sourceTree = "<group>"; };
 		A2000011 /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		A2000012 /* PetProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 				A200000F /* TraitSlidersView.swift */,
 				A2000010 /* NamingView.swift */,
 				A2000011 /* PreviewView.swift */,
+				A2000012 /* PetProfileView.swift */,
 			);
 			path = PetSetup;
 			sourceTree = "<group>";
@@ -227,6 +230,7 @@
 				A100000E /* TraitSlidersView.swift in Sources */,
 				A100000F /* NamingView.swift in Sources */,
 				A1000010 /* PreviewView.swift in Sources */,
+				A1000011 /* PetProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

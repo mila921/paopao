@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CameraView: View {
     @State var viewModel = CameraViewModel()
+    var petAvatarFileName: String = ""
     var onPetSetup: (() -> Void)? = nil
     @State private var showFlash = false
     @State private var catMood: String = "😺"
@@ -75,21 +76,27 @@ struct CameraView: View {
 
     private var topBar: some View {
         HStack {
-            // 小猫表情 - 点击进入宠物设置
-            Text(catMood)
-                .font(.system(size: 28))
-                .onTapGesture {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-                        catMood = ["😺", "😸", "😻", "🙀", "😽"].randomElement()!
-                    }
-                    onPetSetup?()
+            // 宠物头像 - 点击进入宠物设置
+            Button(action: { onPetSetup?() }) {
+                if !petAvatarFileName.isEmpty,
+                   let img = loadPetAvatar(petAvatarFileName) {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(.white, lineWidth: 2))
+                } else {
+                    Text(catMood)
+                        .font(.system(size: 28))
                 }
+            }
 
             Spacer()
 
-            Text("泡泡")
-                .font(.system(size: 22, weight: .heavy, design: .serif))
-                .foregroundStyle(Color(red: 1.0, green: 0.9, blue: 0.43))
+            Text("喵了个日记")
+                .font(.system(size: 18, weight: .heavy, design: .serif))
+                .foregroundStyle(Color(red: 0.31, green: 0.8, blue: 0.77))
 
             Spacer()
 
@@ -180,5 +187,11 @@ struct CameraView: View {
     private func triggerFlash() {
         withAnimation(.easeIn(duration: 0.05)) { showFlash = true }
         withAnimation(.easeOut(duration: 0.2).delay(0.05)) { showFlash = false }
+    }
+
+    private func loadPetAvatar(_ fileName: String) -> UIImage? {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(fileName)
+        return UIImage(contentsOfFile: url.path)
     }
 }

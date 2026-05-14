@@ -4,10 +4,11 @@ struct PreviewView: View {
     let species: String
     let name: String
     let traits: (Int, Int, Int, Int)
+    let avatarImage: UIImage?
     let onConfirm: () -> Void
 
     @State private var progress: CGFloat = 0
-    @State private var showComment = false
+    @State private var visibleComments: Int = 0
     @State private var showButton = false
 
     private var emoji: String {
@@ -24,24 +25,24 @@ struct PreviewView: View {
         return [talkLabels[traits.0 - 1], modeLabels[traits.2 - 1], funLabels[traits.3 - 1]]
     }
 
-    private var sampleComment: String {
+    private var sampleComments: [String] {
         switch species {
         case "cat":
             return ["被夸了啊。本猫勉强给你点个头。",
                     "哦，又出门了。记得带猫粮回来。",
-                    "这张照片…本猫给7分吧，多的是情面。"][Int.random(in: 0...2)]
+                    "这张照片…本猫给7分吧，多的是情面。"]
         case "dog":
             return ["被夸了！！你上次也被夸过对不对！！汪！",
                     "出门啦！！好开心！！我也想去！！",
-                    "这张照片超好看！！你最棒了！！汪汪！"][Int.random(in: 0...2)]
+                    "这张照片超好看！！你最棒了！！汪汪！"]
         case "rabbit":
-            return ["嗯…挺好的。", "今天也辛苦了呢。", "…悄悄说，你今天很好看。"][Int.random(in: 0...2)]
+            return ["嗯…挺好的。", "今天也辛苦了呢。", "…悄悄说，你今天很好看。"]
         case "fox":
             return ["就这？开玩笑的啦~其实还不错。",
                     "本狐看穿了你在偷偷开心哦~",
-                    "哼，算你有点品味吧。"][Int.random(in: 0...2)]
+                    "哼，算你有点品味吧。"]
         default:
-            return ["今天也很棒呢！", "记录下来了，继续加油~", "这个瞬间值得留住！"][Int.random(in: 0...2)]
+            return ["今天也很棒呢！", "记录下来了，继续加油~", "这个瞬间值得留住！"]
         }
     }
 
@@ -54,8 +55,8 @@ struct PreviewView: View {
 
             // 宠物卡片
             VStack(spacing: 12) {
-                // 宠物头像：使用泡泡图片（带白色描边）
-                if let img = UIImage(named: "PetAvatars") {
+                // 宠物头像
+                if let img = avatarImage {
                     Image(uiImage: img)
                         .resizable()
                         .scaledToFill()
@@ -110,27 +111,29 @@ struct PreviewView: View {
             .padding(.horizontal, 24)
 
             // 示例评论
-            if showComment {
-                HStack(alignment: .top, spacing: 10) {
-                    if let img = UIImage(named: "PetAvatars") {
-                        Image(uiImage: img)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                            .overlay(Circle().stroke(.white, lineWidth: 2))
-                    } else {
-                        Text(emoji).font(.system(size: 24))
+            VStack(spacing: 12) {
+                ForEach(0..<visibleComments, id: \.self) { i in
+                    HStack(alignment: .top, spacing: 10) {
+                        if let img = avatarImage {
+                            Image(uiImage: img)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 28, height: 28)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(.white, lineWidth: 1.5))
+                        } else {
+                            Text(emoji).font(.system(size: 20))
+                        }
+                        Text(sampleComments[i])
+                            .font(.system(size: 14, design: .rounded))
+                            .foregroundStyle(.black.opacity(0.7))
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 14).fill(.white))
                     }
-                    Text(sampleComment)
-                        .font(.system(size: 15, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.7))
-                        .padding(12)
-                        .background(RoundedRectangle(cornerRadius: 16).fill(.white))
+                    .transition(.scale.combined(with: .opacity))
                 }
-                .padding(.horizontal, 24)
-                .transition(.scale.combined(with: .opacity))
             }
+            .padding(.horizontal, 24)
 
             Spacer()
 
@@ -152,10 +155,12 @@ struct PreviewView: View {
         }
         .onAppear {
             withAnimation(.linear(duration: 1.5)) { progress = 1.0 }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.65)) { showComment = true }
+            for i in 0..<3 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.7 + Double(i) * 0.5) {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.65)) { visibleComments = i + 1 }
+                }
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.65)) { showButton = true }
             }
         }

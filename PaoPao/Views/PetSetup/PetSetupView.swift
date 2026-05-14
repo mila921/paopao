@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct PetSetupView: View {
     @Environment(\.modelContext) private var modelContext
@@ -15,6 +16,8 @@ struct PetSetupView: View {
     @State private var traitFun = 3
     @State private var petName = ""
     @State private var avoid: [String] = []
+    @State private var avatarItem: PhotosPickerItem? = nil
+    @State private var avatarImage: UIImage? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -39,6 +42,13 @@ struct PetSetupView: View {
                     }
                 }
                 Spacer()
+                Button(action: onComplete) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(.black.opacity(0.4))
+                        .padding(8)
+                        .background(Circle().fill(.black.opacity(0.05)))
+                }
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -48,7 +58,7 @@ struct PetSetupView: View {
             Group {
                 switch step {
                 case 1:
-                    SpeciesSelectionView(selected: $species, customSpecies: $customSpecies)
+                    SpeciesSelectionView(selected: $species, customSpecies: $customSpecies, avatarItem: $avatarItem, avatarImage: $avatarImage)
                 case 2:
                     TraitSlidersView(talk: $traitTalk, tone: $traitTone, mode: $traitMode, fun: $traitFun)
                 case 3:
@@ -58,6 +68,7 @@ struct PetSetupView: View {
                         species: species ?? "cat",
                         name: petName,
                         traits: (traitTalk, traitTone, traitMode, traitFun),
+                        avatarImage: avatarImage,
                         onConfirm: savePet
                     )
                 }
@@ -118,12 +129,21 @@ struct PetSetupView: View {
     }
 
     private func savePet() {
+        var avatarFileName = ""
+        if let image = avatarImage, let data = image.jpegData(compressionQuality: 0.8) {
+            avatarFileName = "pet_avatar_\(UUID().uuidString).jpg"
+            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent(avatarFileName)
+            try? data.write(to: url)
+        }
+
         let finalSpecies = customSpecies.isEmpty ? (species ?? "cat") : customSpecies
         let profile = PetProfile(
             name: petName,
             species: finalSpecies,
             traits: (traitTalk, traitTone, traitMode, traitFun),
-            avoid: avoid
+            avoid: avoid,
+            avatarFileName: avatarFileName
         )
         modelContext.insert(profile)
         try? modelContext.save()
