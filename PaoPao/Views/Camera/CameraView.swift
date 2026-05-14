@@ -31,7 +31,7 @@ struct CameraView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 8)
 
-                Spacer().frame(height: 16)
+                Spacer().frame(height: 66)
 
                 viewfinder
                     .padding(.horizontal, 20)
@@ -89,12 +89,6 @@ struct CameraView: View {
 
             Spacer()
 
-            Text("喵了个日记")
-                .font(.system(size: 17, weight: .heavy, design: .serif))
-                .foregroundStyle(Color(red: 0.35, green: 0.55, blue: 0.55))
-
-            Spacer()
-
             Button(action: {}) {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
                     .font(.system(size: 18))
@@ -136,6 +130,14 @@ struct CameraView: View {
                     .animation(.spring(response: 0.3), value: isRecording)
 
                 cornerStickers(size: geo.size)
+
+                // 小猫趴在相框顶部中央
+                Image("CameraOverlay")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.65)
+                    .position(x: geo.size.width / 2, y: geo.size.width * 0.5 * (2080.0/1734.0) * 0.5 - 70)
+                    .allowsHitTesting(false)
             }
         }
         .aspectRatio(3.0/4.0, contentMode: .fit)
