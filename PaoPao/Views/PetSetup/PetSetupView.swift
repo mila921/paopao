@@ -16,6 +16,7 @@ struct PetSetupView: View {
     @State private var traitFun = 3
     @State private var petName = ""
     @State private var avoid: [String] = []
+    @State private var quirks = ""
     @State private var avatarItem: PhotosPickerItem? = nil
     @State private var avatarImage: UIImage? = nil
 
@@ -62,7 +63,7 @@ struct PetSetupView: View {
                 case 2:
                     TraitSlidersView(talk: $traitTalk, tone: $traitTone, mode: $traitMode, fun: $traitFun)
                 case 3:
-                    NamingView(name: $petName, avoid: $avoid)
+                    NamingView(name: $petName, avoid: $avoid, quirks: $quirks)
                 default:
                     PreviewView(
                         species: species ?? "cat",
@@ -143,7 +144,8 @@ struct PetSetupView: View {
             species: finalSpecies,
             traits: (traitTalk, traitTone, traitMode, traitFun),
             avoid: avoid,
-            avatarFileName: avatarFileName
+            avatarFileName: avatarFileName,
+            quirks: quirks
         )
         modelContext.insert(profile)
         try? modelContext.save()

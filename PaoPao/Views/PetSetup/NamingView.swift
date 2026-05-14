@@ -3,6 +3,7 @@ import SwiftUI
 struct NamingView: View {
     @Binding var name: String
     @Binding var avoid: [String]
+    @Binding var quirks: String
 
     private let avoidOptions: [(key: String, label: String)] = [
         ("marriage_pressure", "催婚催育"),
@@ -31,6 +32,20 @@ struct NamingView: View {
                 .onChange(of: name) { _, newValue in
                     if newValue.count > 6 { name = String(newValue.prefix(6)) }
                 }
+
+            // 小癖好和性格特征
+            VStack(alignment: .leading, spacing: 8) {
+                Text("它有什么小癖好？")
+                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .foregroundStyle(.black.opacity(0.5))
+
+                TextField("比如：喜欢蹭人腿、爱吃零食、一到晚上就疯跑...", text: $quirks, axis: .vertical)
+                    .font(.system(size: 15, design: .rounded))
+                    .lineLimit(3...5)
+                    .padding(14)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(.white))
+            }
+            .padding(.horizontal, 24)
 
             // 禁区标签
             VStack(alignment: .leading, spacing: 12) {

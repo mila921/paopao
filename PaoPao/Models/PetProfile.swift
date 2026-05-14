@@ -13,15 +13,17 @@ final class PetProfile {
     var traitMode: Int
     var traitFun: Int
     var avoid: [String]
+    var quirks: String
     var systemPrompt: String
     var createdAt: Date
     var updatedAt: Date
 
-    init(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String], avatarFileName: String = "") {
+    init(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String], avatarFileName: String = "", quirks: String = "") {
         self.id = UUID()
         self.name = name
         self.species = species
         self.avatarFileName = avatarFileName
+        self.quirks = quirks
         let emojiMap = ["cat": "🐱", "dog": "🐶", "rabbit": "🐰", "fox": "🦊"]
         self.emoji = emojiMap[species] ?? "🐾"
         self.traitTalk = traits.talk
@@ -32,11 +34,11 @@ final class PetProfile {
         self.createdAt = Date()
         self.updatedAt = Date()
         self.systemPrompt = PetProfile.generatePrompt(
-            name: name, species: species, traits: traits, avoid: avoid
+            name: name, species: species, traits: traits, avoid: avoid, quirks: quirks
         )
     }
 
-    static func generatePrompt(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String]) -> String {
+    static func generatePrompt(name: String, species: String, traits: (talk: Int, tone: Int, mode: Int, fun: Int), avoid: [String], quirks: String = "") -> String {
         let speciesName: String = switch species {
         case "cat": "猫"
         case "dog": "狗"
@@ -75,7 +77,10 @@ final class PetProfile {
                 "family": "家庭关系", "health_anxiety": "健康焦虑"
             ]
             let labels = avoid.compactMap { avoidMap[$0] }.joined(separator: "、")
-            prompt += "绝对不主动提及：\(labels)。即使内容涉及这些话题，也只评论积极面，不深入追问。"
+            prompt += "绝对不主动提及：\(labels)。即使内容涉及这些话题，也只评论积极面，不深入追问。\n"
+        }
+        if !quirks.isEmpty {
+            prompt += "【个性特征】\(quirks)\n"
         }
         return prompt
     }
